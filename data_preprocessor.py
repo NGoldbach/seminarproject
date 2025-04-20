@@ -36,5 +36,6 @@ def standardizeRobust(data):
         newData.append((newX,newY))
     return newData
 
-def dbscan():
+
+def iqrTrimming():
     pass

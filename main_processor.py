@@ -73,3 +73,7 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
     for m in range(len(membershipList)):
         membershipList[m] = int(membershipList[m])
     return [membershipList,objFunc]
+
+
+def dbscan():
+    pass
