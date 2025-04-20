@@ -35,3 +35,6 @@ def standardizeRobust(data):
         newY = float((v[1]-medianXY[1])/iqrXY[1])
         newData.append((newX,newY))
     return newData
+
+def dbscan():
+    pass
