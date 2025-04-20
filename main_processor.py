@@ -1,12 +1,20 @@
 from typing import List
 import numpy as np
 
-#input: data array of tuples, array of prototypes,amount of max iterations
+#input: data array of tuples, array of prototypes,amount of max iterations,noise variant bool
 #output: [membershipList,objective function value]
-def kmeans(data: List, initialPrototypes: List, iter=100):
+def kmeans(data: List, initialPrototypes: List, iter=100, noiseVariant=false):
     membershipList = [0] * len(data)
     prototypes = np.array(initialPrototypes)
     k = len(initialPrototypes)
+
+    #Addition of noise prototype
+    if noiseVariant:
+        k += 1
+        centoid = (0,0)
+        for v in data:
+            centoid = (centoid[0]+v[0],centoid[1]+v[1])
+        prototypes.append((centoid[0]/len(data),centoid[1]/len(data)))
 
     for i in range(iter):
         membershipCheck = membershipList.copy()
@@ -38,6 +46,7 @@ def kmeans(data: List, initialPrototypes: List, iter=100):
     for v in range(len(data)):
         for p in k:
             if membershipList[v]==p:
-                objFunc += np.linalg.norm(data[v]-prototypes[p])
+                distance = np.linalg.norm(data[v]-prototypes[p])
+                objFunc += distance*distance
 
     return [membershipList,objFunc]
