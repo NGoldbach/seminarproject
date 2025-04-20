@@ -70,5 +70,6 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
                 else:
                     distance = np.linalg.norm(data[v]-prototypes[p])
                     objFunc += distance*distance
-
+    for m in range(len(membershipList)):
+        membershipList[m] = int(membershipList[m])
     return [membershipList,objFunc]
