@@ -72,7 +72,3 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
                     objFunc += distance*distance
 
     return [membershipList,objFunc]
-
-testData = [(1,1),(2,2),(1.5,1.5),(5,5),(6,6),(5.5,5.5),(1,19)]
-print(kmeans(testData,[(1,1),(5,5)],nvBool=False)[0])
-print(kmeans(testData,[(1,1),(5,5)],nvBool=True)[0])
