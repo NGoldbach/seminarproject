@@ -8,8 +8,8 @@ def getDataSet(index):
     return dataSets[index]
 
 
-dataSets = {
+dataSets = [
     # [...],
     # [...],
     # ...
-}
+]
