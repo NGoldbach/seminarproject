@@ -6,6 +6,7 @@ import data_generator as dg
 
 
 testData = [(1,1),(2,2),(1.5,1.5),(5,5),(6,6),(5.5,5.5),(1,19)]
-print(mp.kmeans(testData,[(1,1),(5,5)],nvBool=False)[0])
-print(mp.kmeans(testData,[(1,1),(5,5)],nvBool=True)[0])
+noNoiseTest = mp.kmeans(testData,[(1,1),(5,5)],nvBool=False)
+withNoiseTest = mp.kmeans(testData,[(1,1),(5,5)],nvBool=True)
+vs.drawMultipleCAResults([testData,testData],[noNoiseTest[0],withNoiseTest[0]],[False,True])
 
