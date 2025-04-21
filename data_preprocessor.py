@@ -37,5 +37,12 @@ def standardizeRobust(data):
     return newData
 
 
-def iqrTrimming():
-    pass
+def iqrTrimming(data, iqrScalar=1.5):
+    iqrTrimRange = 1.349 * iqrScalar #1.349 is theoretical value for Q3-Q1
+    trimmedData = []
+
+    for d in data:
+        if abs(d[0]) <= iqrTrimRange and abs(d[1]) <= iqrTrimRange:
+            trimmedData.append(d)
+
+    return trimmedData
