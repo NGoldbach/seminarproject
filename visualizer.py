@@ -18,6 +18,8 @@ def drawCAResult(data, membershipList, noiseGroup=False):
         else:
             plt.scatter(xVals, yVals, color=colors(i), label=f'Cluster {i}')
 
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
     plt.legend()
 
 

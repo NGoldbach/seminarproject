@@ -18,3 +18,9 @@ import data_generator as dg
 # sptData = [.5,-.4,.1,.2,.3,.9,-.8,.6,.5,-.4,.1,.8,-.9,-.2]
 # sptMemb = [2,1,0,0,0,2,1,1,1,1,1,2,2,2]
 # vs.drawSilhouttePlot(sptData, sptMemb)
+
+#generator test
+dg.createDataSet(50,2,1,1)
+datasets = dg.getDataSets()
+noNoiseTest = mp.kmeans(datasets[-1],[datasets[-1][11],datasets[-1][66]])
+vs.drawMultipleCAResults([datasets[-1]],[noNoiseTest[0]],[False])
