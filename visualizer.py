@@ -31,7 +31,7 @@ def drawMultipleCAResults(dataArray, membershipListArray, hasNoiseArray=[]):
 
 def drawSilhouttePlot(scoreData,membershipList, noiseCluster=False):
     clusteredData = [[] for i in range(max(membershipList) + 1)]
-    yVals = []
+    Labels = []
 
     for p in range(len(scoreData)):
         clusteredData[membershipList[p]].append(scoreData[p])
@@ -44,12 +44,12 @@ def drawSilhouttePlot(scoreData,membershipList, noiseCluster=False):
     for list in range(len(clusteredData)):
         for s in range(len(clusteredData[list])):
             orderedData.append(clusteredData[list][s])
-            yVals.append(f'C{list}P{s}' if not noiseCluster else f'NC{list}P{s}')
+            Labels.append(f'C{list}P{s}' if not noiseCluster else f'NC{list}P{s}')
         if list < len(clusteredData)-1:
             orderedData.append(0)
-            yVals.append(f'B{list}')
+            Labels.append(f'B{list}')
 
-    plt.barh(yVals, orderedData)
+    plt.barh(Labels, orderedData)
     plt.ylabel('Points')
     plt.xlabel('Score')
     plt.gca().invert_yaxis()
