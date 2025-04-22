@@ -55,7 +55,6 @@ def drawSilhouttePlot(scoreData,membershipList, noiseCluster=False):
     plt.ylabel('Points')
     plt.xlabel('Score')
     plt.gca().invert_yaxis()
-
     plt.show()
 
 
@@ -63,7 +62,7 @@ def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k')
     plt.xlabel(iterationLabel)
     plt.ylabel(indexLabel)
 
-    xVals = list(range(1, 1+len(scoreData)))
+    xVals = list(range(1, 1 + len(scoreData)))
     plt.plot(xVals, scoreData, marker='o')
 
     plt.show()
