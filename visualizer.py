@@ -29,13 +29,39 @@ def drawMultipleCAResults(dataArray, membershipListArray, hasNoiseArray=[]):
     plt.show()
 
 
-def drawSilhouttePlot():
-    pass
+def drawSilhouttePlot(scoreData,membershipList, noiseCluster=False):
+    clusteredData = [[] for i in range(max(membershipList) + 1)]
+    yVals = []
+
+    for p in range(len(scoreData)):
+        clusteredData[membershipList[p]].append(scoreData[p])
+
+    for array in range(len(clusteredData)):
+        clusteredData[array] = sorted(clusteredData[array], reverse=True)
 
 
-def drawDBIGraph():
-    pass
+    orderedData = []
+    for list in range(len(clusteredData)):
+        for s in range(len(clusteredData[list])):
+            orderedData.append(clusteredData[list][s])
+            yVals.append(f'C{list}P{s}' if not noiseCluster else f'NC{list}P{s}')
+        if list < len(clusteredData)-1:
+            orderedData.append(0)
+            yVals.append(f'B{list}')
+
+    plt.barh(yVals, orderedData)
+    plt.ylabel('Points')
+    plt.xlabel('Score')
+    plt.gca().invert_yaxis()
+
+    plt.show()
 
 
-def drawAverageSilhoutteScoreGraph():
-    pass
+def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k'):
+    plt.xlabel(iterationLabel)
+    plt.ylabel(indexLabel)
+
+    xVals = list(range(1, 1+len(scoreData)))
+    plt.plot(xVals, scoreData, marker='o')
+
+    plt.show()
