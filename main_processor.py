@@ -75,11 +75,7 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
     return [membershipList,objFunc]
 
 
-import numpy as np
-
-import numpy as np
-
-def dbscan(data, eps=0.5, min_pts=4):
+def dbscan(data, eps=0.05, min_pts=4):
     n_points = len(data)                 # Anzahl der Punkte im Datensatz
     labels = np.full(n_points, -1)        # Alle Labels auf -1 (Rauschen) setzen
     visit = [False] * n_points            # Besuchte Punkte markieren
@@ -93,13 +89,10 @@ def dbscan(data, eps=0.5, min_pts=4):
         # Suche Nachbarn von Punkt i
         neighbors = []
         for j in range(n_points):
-            if np.linalg.norm(data[i] - data[j]) <= eps:
+            if np.linalg.norm(np.array(data[i]) - np.array(data[j])) <= eps:
                 neighbors.append(j)
 
-        # Markiere als Rauschen, wenn nicht genügend Nachbarn
-        if len(neighbors) < min_pts:
-            labels[i] = -1
-        else:
+        if len(neighbors) >= min_pts:
             # Neuer Cluster
             labels[i] = cluster_id
             queue = neighbors.copy()      # Punkte, die noch bearbeitet werden müssen
@@ -109,22 +102,22 @@ def dbscan(data, eps=0.5, min_pts=4):
 
                 if not visit[neighbor_id]:
                     visit[neighbor_id] = True
+                    labels[neighbor_id] = cluster_id
 
                     # Suche Nachbarn für diesen Punkt
                     neighbors_of_neighbor = []
                     for k in range(n_points):
-                        if np.linalg.norm(data[neighbor_id] - data[k]) <= eps:
+                        if np.linalg.norm(np.array(data[neighbor_id]) - np.array(data[k])) <= eps:
                             neighbors_of_neighbor.append(k)
 
                     # Nur wenn genug Nachbarn: Cluster erweitern
                     if len(neighbors_of_neighbor) >= min_pts:
                         queue.extend(neighbors_of_neighbor)
 
-                # Falls dieser Punkt bisher Rauschen war, Cluster zuweisen
-                if labels[neighbor_id] == -1:
-                    labels[neighbor_id] = cluster_id
-
             # Nach Bearbeiten aller Nachbarn: Cluster-ID erhöhen
             cluster_id += 1
 
+    for i in range(len(data)):
+        if labels[i] == -1:
+            labels[i] = cluster_id
     return labels

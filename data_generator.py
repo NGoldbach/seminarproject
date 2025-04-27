@@ -60,7 +60,7 @@ def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circ
 def circle(data,pointAmount,centers,cluster,radius,maxA1,maxA2):
     radii = np.abs(np.random.normal(loc=0.0, scale=0.5, size=pointAmount)) * radius
     for i in range(pointAmount):
-        while radii[i] > radius:
+        while radii[i] > radius/2:
             radii[i] = np.abs(np.random.normal(loc=0.0, scale=1.0)) * radius
     angles = np.random.uniform(0, 2 * np.pi, pointAmount)
     points = [(centers[cluster][0] + r * np.cos(a), centers[cluster][1] + r * np.sin(a)) for r, a in zip(radii, angles)]
@@ -69,7 +69,7 @@ def circle(data,pointAmount,centers,cluster,radius,maxA1,maxA2):
         data.append(p)
 
 def ring(data,pointAmount,centers,cluster,radius,maxA1,maxA2):
-    radii = np.sqrt(np.random.uniform(0.8,1.0,pointAmount)) * radius
+    radii = np.sqrt(np.random.uniform(0.3,0.5,pointAmount)) * radius
     angles = np.random.uniform(0, 2 * np.pi, pointAmount)
     points = [(centers[cluster][0] + r * np.cos(a), centers[cluster][1] + r * np.sin(a)) for r, a in zip(radii, angles)]
     points = [(a1 * maxA1, a2 * maxA2) for (a1, a2) in points]
@@ -80,7 +80,7 @@ def line(data, pointAmount, centers, cluster, radius, maxA1, maxA2):
     angle = random.uniform(0, 360)
     angle_rad = math.radians(angle)
     v1 = (math.cos(angle_rad) * radius, math.sin(angle_rad) * radius)
-    v2 = (math.cos(angle_rad + math.pi/2) * radius * 0.33, math.sin(angle_rad + math.pi/2) * radius * 0.33)
+    v2 = (math.cos(angle_rad + math.pi/2) * radius * 0.1, math.sin(angle_rad + math.pi/2) * radius * 0.1)
     points = []
 
     for i in range(pointAmount):
