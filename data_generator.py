@@ -1,3 +1,4 @@
+import math
 import random
 import numpy as np
 
@@ -24,7 +25,7 @@ def getDataSets():
 
 
 
-def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=None, clusterDensity=None):
+def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circle','line','ring'], clusterDensity=None):
     data = []
     centers = []
     radius = 0.1  # replace with density[cluster] in loops
@@ -42,13 +43,52 @@ def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=None, 
         centers.append(center)
 
     for cluster in range(clusterAmount):
-        radii = np.sqrt(np.random.rand(pointAmount)) * radius
-        angles = np.random.uniform(0, 2 * np.pi, pointAmount)
-        points = [(centers[cluster][0] + r * np.cos(a), centers[cluster][1] + r * np.sin(a)) for r, a in zip(radii, angles)]
-        points = [(a1*maxA1, a2*maxA2) for (a1, a2) in points]
-        for p in points:
-            data.append(p)
+        if clusterShapes[cluster] == 'line':
+            line(data, pointAmount, centers, cluster, radius, maxA1, maxA2)
+        elif clusterShapes[cluster] == 'circle':
+            circle(data,pointAmount,centers,cluster,radius,maxA1,maxA2)
+        elif clusterShapes[cluster] == 'ring':
+            ring(data,pointAmount,centers,cluster,radius,maxA1,maxA2)
+
 
     with open("dataSets.txt", "a") as f:
         tuple_strs = ["({},{})".format(p[0], p[1]) for p in data]
         f.write(" ".join(tuple_strs) + "\n")
+
+
+
+def circle(data,pointAmount,centers,cluster,radius,maxA1,maxA2):
+    radii = np.abs(np.random.normal(loc=0.0, scale=0.5, size=pointAmount)) * radius
+    for i in range(pointAmount):
+        while radii[i] > radius:
+            radii[i] = np.abs(np.random.normal(loc=0.0, scale=1.0)) * radius
+    angles = np.random.uniform(0, 2 * np.pi, pointAmount)
+    points = [(centers[cluster][0] + r * np.cos(a), centers[cluster][1] + r * np.sin(a)) for r, a in zip(radii, angles)]
+    points = [(a1 * maxA1, a2 * maxA2) for (a1, a2) in points]
+    for p in points:
+        data.append(p)
+
+def ring(data,pointAmount,centers,cluster,radius,maxA1,maxA2):
+    radii = np.sqrt(np.random.uniform(0.8,1.0,pointAmount)) * radius
+    angles = np.random.uniform(0, 2 * np.pi, pointAmount)
+    points = [(centers[cluster][0] + r * np.cos(a), centers[cluster][1] + r * np.sin(a)) for r, a in zip(radii, angles)]
+    points = [(a1 * maxA1, a2 * maxA2) for (a1, a2) in points]
+    for p in points:
+        data.append(p)
+
+def line(data, pointAmount, centers, cluster, radius, maxA1, maxA2):
+    angle = random.uniform(0, 360)
+    angle_rad = math.radians(angle)
+    v1 = (math.cos(angle_rad) * radius, math.sin(angle_rad) * radius)
+    v2 = (math.cos(angle_rad + math.pi/2) * radius * 0.33, math.sin(angle_rad + math.pi/2) * radius * 0.33)
+    points = []
+
+    for i in range(pointAmount):
+        r1 = random.uniform(-1, 1)
+        r2 = random.uniform(-1, 1)
+        point = (
+            centers[cluster][0] + r1 * v1[0] + r2 * v2[0],
+            centers[cluster][1] + r1 * v1[1] + r2 * v2[1]
+        )
+        point = (point[0] * maxA1, point[1] * maxA2)
+        data.append(point)

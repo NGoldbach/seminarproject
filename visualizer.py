@@ -14,9 +14,9 @@ def drawCAResult(data, membershipList, noiseGroup=False):
         xVals = [p[0] for p in clusters[i]]
         yVals = [p[1] for p in clusters[i]]
         if i == clusterCount - 1 and noiseGroup:
-            plt.scatter(xVals, yVals, color=colors(i), label=f'Noisecluster')
+            plt.scatter(xVals, yVals, color=colors(i), label=f'Noisecluster', s=5)
         else:
-            plt.scatter(xVals, yVals, color=colors(i), label=f'Cluster {i}')
+            plt.scatter(xVals, yVals, color=colors(i), label=f'Cluster {i}', s=5)
 
     plt.xlim(0, 1)
     plt.ylim(0, 1)
