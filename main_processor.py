@@ -75,5 +75,56 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
     return [membershipList,objFunc]
 
 
-def dbscan():
-    pass
+import numpy as np
+
+import numpy as np
+
+def dbscan(data, eps=0.5, min_pts=4):
+    n_points = len(data)                 # Anzahl der Punkte im Datensatz
+    labels = np.full(n_points, -1)        # Alle Labels auf -1 (Rauschen) setzen
+    visit = [False] * n_points            # Besuchte Punkte markieren
+    cluster_id = 0                        # Cluster-Nummerierung mit 0 starten
+
+    for i in range(n_points):
+        if visit[i]:
+            continue
+        visit[i] = True
+
+        # Suche Nachbarn von Punkt i
+        neighbors = []
+        for j in range(n_points):
+            if np.linalg.norm(data[i] - data[j]) <= eps:
+                neighbors.append(j)
+
+        # Markiere als Rauschen, wenn nicht genügend Nachbarn
+        if len(neighbors) < min_pts:
+            labels[i] = -1
+        else:
+            # Neuer Cluster
+            labels[i] = cluster_id
+            queue = neighbors.copy()      # Punkte, die noch bearbeitet werden müssen
+
+            while queue:
+                neighbor_id = queue.pop(0)
+
+                if not visit[neighbor_id]:
+                    visit[neighbor_id] = True
+
+                    # Suche Nachbarn für diesen Punkt
+                    neighbors_of_neighbor = []
+                    for k in range(n_points):
+                        if np.linalg.norm(data[neighbor_id] - data[k]) <= eps:
+                            neighbors_of_neighbor.append(k)
+
+                    # Nur wenn genug Nachbarn: Cluster erweitern
+                    if len(neighbors_of_neighbor) >= min_pts:
+                        queue.extend(neighbors_of_neighbor)
+
+                # Falls dieser Punkt bisher Rauschen war, Cluster zuweisen
+                if labels[neighbor_id] == -1:
+                    labels[neighbor_id] = cluster_id
+
+            # Nach Bearbeiten aller Nachbarn: Cluster-ID erhöhen
+            cluster_id += 1
+
+    return labels

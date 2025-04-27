@@ -11,8 +11,8 @@ import data_generator as dg
 # vs.drawMultipleCAResults([testData,testData],[noNoiseTest[0],withNoiseTest[0]],[False,True])
 
 #dbi test
-#dbiData = [12,52,5,9,100,22,75]
-#vs.drawDBIGraph(dbiData)
+# dbiData = [12,52,5,9,100,22,75]
+# vs.drawDBIGraph(dbiData)
 
 #silouhette plot test
 # sptData = [.5,-.4,.1,.2,.3,.9,-.8,.6,.5,-.4,.1,.8,-.9,-.2]
