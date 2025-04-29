@@ -7,18 +7,19 @@ def dbi(data, labels):
     unique_labels = np.unique(labels)         # Eindeutige Cluster-IDs bestimmen
     n_clusters = len(unique_labels)           # Anzahl der Cluster
     labels = np.array(labels)                 # Sicherstellen, dass labels ein NumPy-Array ist
+    npData = np.array(data)
 
     # Zentroiden (Mittelpunkte) der Cluster berechnen
     centroids = []
     for label in unique_labels:
-        cluster_points = data[labels == label]
+        cluster_points = npData[labels == label]
         centroids.append(np.mean(cluster_points, axis=0))
     centroids = np.array(centroids)
 
     # Durchschnittliche Intra-Cluster-Distanzen berechnen
     intra_distances = []
     for idx, label in enumerate(unique_labels):
-        cluster_points = data[labels == label]
+        cluster_points = npData[labels == label]
         centroid = centroids[idx]
         dists = np.linalg.norm(cluster_points - centroid, axis=1)  # Abstände zum Zentrum
         intra_distances.append(np.mean(dists))  # Durchschnittliche Intra-Distanz
@@ -31,9 +32,8 @@ def dbi(data, labels):
         for j in range(n_clusters):
             if i != j:
                 inter_distance = np.linalg.norm(centroids[i] - centroids[j])
-                if inter_distance != 0:
-                    ratio = (intra_distances[i] + intra_distances[j]) / inter_distance
-                    max_ratio = max(max_ratio, ratio)  # Maximalen Wert für Cluster i speichern
+                ratio = (intra_distances[i] + intra_distances[j]) / inter_distance
+                max_ratio = max(max_ratio, ratio)  # Maximalen Wert für Cluster i speichern
         db_index += max_ratio
 
     return db_index / n_clusters
@@ -45,40 +45,28 @@ def silhouette(data, labels):
     """
     :return: Array mit Silhouette-Werten (je näher an 1, desto besser der Punkt im Cluster)
     """
+    npData = np.array(data)
     unique_labels = np.unique(labels)
-    n_samples = len(data)
+    n_samples = len(npData)
     silhouette_vals = np.full(n_samples, np.nan)  # Standardwerte sind NaN (z. B. für Rauschen)
 
     for i, label in enumerate(labels):
-        if label == -1:
-            continue  # Ignoriere Rauschen bei DBSCAN
-
         # Punkte im gleichen Cluster finden
         in_cluster = (labels == label)
-        same_cluster = data[in_cluster]
-
-        if len(same_cluster) <= 1:
-            continue  # Wenn Cluster nur 1 Punkt hat → kein Silhouette-Wert berechenbar
-
+        same_cluster = npData[in_cluster]
         # a(i): Durchschnittliche Distanz zu anderen Punkten im selben Cluster (ohne sich selbst)
-        a_i = np.mean([
-            np.linalg.norm(data[i] - p)
-            for j, p in enumerate(same_cluster)
-            if not np.all(p == data[i])
-        ])
+        a_i = np.mean(np.linalg.norm(same_cluster - npData[i],axis=1))
 
         # b(i): Kleinste durchschnittliche Distanz zu einem anderen Cluster
         b_i = np.inf
         for other_label in unique_labels:
             if other_label != label and other_label != -1:
-                other_points = data[labels == other_label]
-                if len(other_points) == 0:
-                    continue
-                dist = np.mean(np.linalg.norm(other_points - data[i], axis=1))
-                b_i = min(b_i, dist)
+                other_points = npData[labels == other_label]
+                center = np.mean(other_points, axis=0)
+                dist = np.linalg.norm(center-npData[i])
+                b_i = min(b_i,dist)
 
         # Silhouette-Wert berechnen: (b - a) / max(a, b)
-        if b_i != np.inf:
-            silhouette_vals[i] = (b_i - a_i) / max(a_i, b_i)
+        silhouette_vals[i] = (b_i - a_i) / max(a_i, b_i)
 
     return silhouette_vals  # Ein Array mit Silhouette-Werten (zwischen -1 und 1)

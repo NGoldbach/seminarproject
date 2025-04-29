@@ -1,6 +1,7 @@
 from typing import List
 import numpy as np
 import math
+import random
 
 #input: data array of tuples, array of prototypes
 #optional inputs:
@@ -8,12 +9,13 @@ import math
 #   noise variant on/off (default off), nvBool
 #   noise variant distance scalar (default 0.275), nvScalar
 #output: [membershipList (0 to k-1),objective function value]
-def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
+def kmeans(data, k, nvBool=False,nvScalar=0.275, iter=100):
     membershipList = [0] * len(data)
-    prototypes = np.array(initialPrototypes)
-    k = len(initialPrototypes)
+    prototypes = []
+    for i in range(k):
+        prototypes.append(random.choice(data))
     nvDistSquared = 0 #noise Prototype
-
+    prototypes = np.array(prototypes)
     #Addition of noise prototype
     if nvBool:
         k += 1

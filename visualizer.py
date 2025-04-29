@@ -8,7 +8,7 @@ def drawCAResult(data, membershipList, noiseGroup=False):
     for p in range(len(data)):
         clusters[membershipList[p]].append(data[p])
 
-    colors = ['blue', 'red', 'yellow', 'black', 'green', 'pink']
+    colors = ['blue', 'red', 'green', 'black', 'orange', 'pink']
 
     for i in range(clusterCount):
         xVals = [p[0] for p in clusters[i]]
@@ -43,13 +43,17 @@ def drawSilhouttePlot(scoreData,membershipList, noiseCluster=False):
 
 
     orderedData = []
+    counter = 0
     for list in range(len(clusteredData)):
         for s in range(len(clusteredData[list])):
             orderedData.append(clusteredData[list][s])
-            Labels.append(f'C{list}P{s}' if not noiseCluster else f'NC{list}P{s}')
+            Labels.append(counter)
+            counter += 1
         if list < len(clusteredData)-1:
-            orderedData.append(0)
-            Labels.append(f'B{list}')
+            for i in range(round(len(scoreData)/10)):
+                orderedData.append(0)
+                Labels.append(counter)
+                counter += 1
 
     plt.barh(Labels, orderedData)
     plt.ylabel('Points')

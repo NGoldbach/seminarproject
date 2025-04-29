@@ -6,9 +6,9 @@ import data_generator as dg
 import numpy as np
 
 #kmeans test
-#testData = [(1,1),(2,2),(1.5,1.5),(5,5),(6,6),(5.5,5.5),(1,19)]
-# noNoiseTest = mp.kmeans(testData,[(1,1),(5,5)],nvBool=False)
-# withNoiseTest = mp.kmeans(testData,[(1,1),(5,5)],nvBool=True)
+# testData = [(0.1,0.1),(0.2,0.2),(0.5,0.5),(5,5),(6,6),(5.5,5.5),(1,19)]
+# noNoiseTest = mp.kmeans(testData,2,nvBool=False)
+# withNoiseTest = mp.kmeans(testData,2,nvBool=True)
 # vs.drawMultipleCAResults([testData,testData],[noNoiseTest[0],withNoiseTest[0]],[False,True])
 
 # dbscan test
@@ -35,14 +35,16 @@ import numpy as np
 # DBSCAN test II
 # dg.createDataSet(100,3,1,1)
 # datasets = dg.getDataSets()
-# labels = mp.dbscan(datasets[-1])
-# vs.drawMultipleCAResults([datasets[-1]], [labels], [False])
+# data = datasets[-1]
+# labels = mp.dbscan(data)
+# vs.drawMultipleCAResults([data], [labels], [False])
+# print(labels)
 
 #metriken test
-testData = np.array([(1, 1), (2, 2), (1.5, 1.5), (5, 5), (6, 6), (5.5, 5.5), (1, 19)])
-intial_prototypes = [(1, 1), (5, 5)]
+dg.createDataSet(100,3,1,1)
+testData = dg.getDataSets()[-1]
 
-kmeans_result = mp.kmeans(testData, intial_prototypes)
+kmeans_result = mp.kmeans(testData,3)
 kmeans_labels = np.array(kmeans_result[0])  # Konvertiere Labels in NumPy-Array
 dbi_kmeans = ev.dbi(testData, kmeans_labels)
 print("Kmeans DBI: ", dbi_kmeans, "\n")
@@ -50,10 +52,10 @@ silhouette_kmeans = ev.silhouette(testData, kmeans_labels)
 print("Kmeans Silhouette: ", silhouette_kmeans, "\n")
 vs.drawIndexGraph([dbi_kmeans])
 vs.drawSilhouttePlot(silhouette_kmeans, kmeans_labels)
-
+vs.drawMultipleCAResults([testData],[kmeans_labels],[False])
 
 # DBSCAN Test
-dbscan_labels = np.array(mp.dbscan(testData, eps=2.0, min_pts=2))  # Ersetze 'data' durch 'testData'
+dbscan_labels = np.array(mp.dbscan(testData))  # Ersetze 'data' durch 'testData'
 print("DBSCAN -Cluster Labels: ", dbscan_labels, "\n")
 silhouette_dbscan = ev.silhouette(testData, dbscan_labels)  # Ersetze 'data' durch 'testData'
 print("DBSCAN Silhouette: ", silhouette_dbscan, "\n")
@@ -61,3 +63,4 @@ dbi_dbscan = ev.dbi(testData, dbscan_labels)  # Ersetze 'data' durch 'testData'
 print("DBSCAN -DBI: ", dbi_dbscan, "\n")
 vs.drawIndexGraph([dbi_dbscan])
 vs.drawSilhouttePlot(silhouette_dbscan, dbscan_labels)
+vs.drawMultipleCAResults([testData],[dbscan_labels],[False])
