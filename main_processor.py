@@ -21,9 +21,8 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
             for p in prototypes:
                 tempDist = np.linalg.norm(v - p)
                 nvDistSquared += tempDist * tempDist
-        nvDistSquared = nvDistSquared/(k-1)
+        nvDistSquared = nvDistSquared/(len(data)*(k-1))
         nvDistSquared = nvDistSquared*nvScalar
-
     for i in range(iter):
         membershipCheck = membershipList.copy()
 
@@ -43,7 +42,7 @@ def kmeans(data, initialPrototypes, nvBool=False,nvScalar=0.275, iter=100):
                     for p in prototypes:
                         tempDist = np.linalg.norm(v - p)
                         nvDistSquared += tempDist*tempDist
-                nvDistSquared = nvDistSquared / (k-1)
+                nvDistSquared = nvDistSquared/(len(data)*(k-1))
                 nvDistSquared = nvDistSquared * nvScalar
             else:
                 centoid = (0, 0)
