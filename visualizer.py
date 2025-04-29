@@ -8,15 +8,15 @@ def drawCAResult(data, membershipList, noiseGroup=False):
     for p in range(len(data)):
         clusters[membershipList[p]].append(data[p])
 
-    colors = cm.get_cmap('tab10', clusterCount)
+    colors = ['blue', 'red', 'yellow', 'black', 'green', 'pink']
 
     for i in range(clusterCount):
         xVals = [p[0] for p in clusters[i]]
         yVals = [p[1] for p in clusters[i]]
         if i == clusterCount - 1 and noiseGroup:
-            plt.scatter(xVals, yVals, color=colors(i), label=f'Noisecluster', s=5)
+            plt.scatter(xVals, yVals, color=colors[i], label=f'Noisecluster', s=5)
         else:
-            plt.scatter(xVals, yVals, color=colors(i), label=f'Cluster {i}', s=5)
+            plt.scatter(xVals, yVals, color=colors[i], label=f'Cluster {i+1}', s=5)
 
     plt.xlim(0, 1)
     plt.ylim(0, 1)
