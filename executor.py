@@ -5,6 +5,52 @@ import visualizer as vs
 import data_generator as dg
 import numpy as np
 
+
+
+#pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
+#for all 24 variants(3 algos, d1-d4, dvv on/off)
+
+#tabelle = avg pc, avg total sc, avg total dbi
+#visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]
+
+
+
+
+
+
+def testrun(dn, algo, dvv):
+    avgPercentages = []
+    avgTotalSc = []
+    avgDbi = []
+    percentageArrays = [] #[[]...]
+    scArrays = []
+    dbiArrays = []
+    for i in range(len(dn)):
+        currentDataset = dn[i]
+        result = None
+        if algo == 0:
+            result = mp.kmeans(currentDataset,3,False)
+        elif algo == 1:
+            result = mp.kmeans(currentDataset,3,True, #scalar x if dvv else scalar y)
+        else:
+            result = mp.dbscan(currentDataset,#eps x if dvv else eps y)
+
+        # in arrays an stelle i jeweils berechnen/eintragen
+    return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #kmeans test
 # testData = [(0.3,0.3), (0.401, 0.398), (0.399, 0.402), (0.400, 0.401), (0.403, 0.400), (0.398, 0.399), (0.402, 0.397), (0.400, 0.400), (0.401, 0.403), (0.397, 0.401), (0.400, 0.399), (0.6, 0.6), (0.633, 0.633), (0.667, 0.667), (0.7, 0.7), (0.733, 0.733), (0.767, 0.767), (0.8, 0.8), (0.833, 0.833), (0.867, 0.867), (0.9, 0.9)]
 # testData = dp.standardize(testData)
@@ -22,14 +68,14 @@ import numpy as np
 #         savedLabels = currentResult
 # vs.drawMultipleCAResults([testData],[currentResult[0]],[True])
 
-data = [
-    -20, 5, 30,
-    1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2,
-    10.0, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11
-]
-
-stData = dp.standardize(data)
-print(stData)
+# data = [
+#     -20, 5, 30,
+#     1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2,
+#     10.0, 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7, 10.8, 10.9, 11
+# ]
+#
+# stData = dp.standardize(data)
+# print(stData)
 
 # for i in range(1):
 #     dg.createDataSet(100,2,1,3)
