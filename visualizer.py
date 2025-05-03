@@ -8,7 +8,7 @@ def drawCAResult(data, membershipList, noiseGroup=False):
     for p in range(len(data)):
         clusters[membershipList[p]].append(data[p])
 
-    colors = ['blue', 'red', 'green', 'black', 'orange', 'pink']
+    colors = ['blue', 'red', 'pink', 'black', 'orange', 'green']
 
     for i in range(clusterCount):
         xVals = [p[0] for p in clusters[i]]
@@ -18,8 +18,8 @@ def drawCAResult(data, membershipList, noiseGroup=False):
         else:
             plt.scatter(xVals, yVals, color=colors[i], label=f'Cluster {i+1}', s=5)
 
-    plt.xlim(0, 1)
-    plt.ylim(0, 1)
+    plt.xlim(-4, 4)
+    plt.ylim(-4, 4)
     plt.legend()
 
 

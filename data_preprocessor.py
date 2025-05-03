@@ -13,15 +13,11 @@ def normalize(data):
 
 #Same input, output standardized based on mean and stdDeviation
 def standardize(data):
-    newData = []
-    meanXY = np.mean(data,axis=0)
-    stdDeviationXY = np.std(data,axis=0)
-    for v in data:
-        newX = float((v[0]-meanXY[0])/stdDeviationXY[0])
-        newY = float((v[1]-meanXY[1])/stdDeviationXY[1])
-        newData.append((newX,newY))
-    print(newData)
-    return newData
+    data = np.array(data, dtype=float)
+    mean = np.mean(data, axis=0)
+    std = np.std(data, axis=0)
+    standardized_data = (data - mean) / std
+    return standardized_data.tolist()
 
 #Same input, output robust standardization based on median and IQR
 def standardizeRobust(data):

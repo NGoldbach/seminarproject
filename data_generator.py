@@ -25,7 +25,7 @@ def getDataSets():
 
 
 
-def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circle','line','ring'], clusterDensity=None):
+def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circle','circle','circle'], clusterDensity=None):
     data = []
     centers = []
     radius = 0.1  # replace with density[cluster] in loops

@@ -9,7 +9,7 @@ import random
 #   noise variant on/off (default off), nvBool
 #   noise variant distance scalar (default 0.275), nvScalar
 #output: [membershipList (0 to k-1),objective function value]
-def kmeans(data, k, nvBool=False,nvScalar=0.275, iter=100):
+def kmeans(data, k, nvBool=False,nvScalar=0.5, iter=100):
     membershipList = [0] * len(data)
     prototypes = []
     for i in range(k):
