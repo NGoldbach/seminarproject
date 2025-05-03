@@ -16,8 +16,6 @@ import numpy as np
 
 
 
-
-
 def testrun(dn, algo, dvv):
     avgPercentages = []
     avgTotalSc = []
@@ -36,6 +34,7 @@ def testrun(dn, algo, dvv):
             result = mp.dbscan(currentDataset,#eps x if dvv else eps y)
 
         # in arrays an stelle i jeweils berechnen/eintragen
+            # [c1,c1,c1,c1,c1,c2,c2,c2,c2,c2,c3,c3,c3,n,n,n,n,n,n,]
     return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
 
 
