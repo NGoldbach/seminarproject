@@ -23,6 +23,31 @@ def drawCAResult(data, membershipList, noiseGroup=False):
     plt.legend()
 
 
+def drawCluster(data, k, points):
+    clusters = [[] for i in range(k+1)]
+    counter = 0
+    for cluster in range(k):
+        for point in range(points):
+            clusters[cluster].append(data[counter])
+            counter += 1
+
+    for i in range(len(data)):
+        if i>=counter:
+            clusters[k].append(data[i])
+
+    colors = ['blue', 'red', 'pink', 'black', 'orange', 'green']
+
+    for i in range(k+1):
+        xVals = [p[0] for p in clusters[i]]
+        yVals = [p[1] for p in clusters[i]]
+        plt.scatter(xVals, yVals, color=colors[i], label=f'Cluster {i + 1}', s=5)
+
+    plt.xlim(0, 1)
+    plt.ylim(0, 1)
+    plt.legend()
+    plt.show()
+
+
 def drawMultipleCAResults(dataArray, membershipListArray, hasNoiseArray=[]):
     for i in range(len(dataArray)):
         plt.figure()

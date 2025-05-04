@@ -2,30 +2,68 @@ import math
 import random
 import numpy as np
 
-def noiseGenerator(data):
-    # add noise points
-    # return longer dataset, noise points at the end
-    pass
+def noiseGenerator(data, mode):
+    #modes: low/far, high/far, low/near, high/near
+
+    noisePercentage = 0
+    noiseMinDistScalar = 0
+    if mode == 0:
+        noisePercentage = 0.25
+        noiseMinDistScalar = 0.75
+    elif mode == 1:
+        noisePercentage = 0.75
+        noiseMinDistScalar = 0.75
+    elif mode == 2:
+        noisePercentage = 0.25
+        noiseMinDistScalar = 0.25
+    elif mode == 3:
+        noisePercentage = 0.75
+        noiseMinDistScalar = 0.25
+
+    clusterCenters = data[1]
+    clusterRadius = data[2]
+    minDistance = clusterRadius * (1 + noiseMinDistScalar)
+
+    numNoisePoints = int(len(data[0]) * noisePercentage)
+    noisePoints = []
+
+    while len(noisePoints) < numNoisePoints:
+        x = random.uniform(0, 1)
+        y = random.uniform(0, 1)
+        valid = True
+        for cx, cy in clusterCenters:
+            dist = math.hypot(x - cx, y - cy)
+            if dist < minDistance:
+                valid = False
+                break
+        if valid:
+            noisePoints.append((x, y))
+
+    newData = data[0].copy()
+    newData.extend(noisePoints)
+    return newData
 
 
 def getDataSets():
     loaded_arrays = []
-
     with open("dataSets.txt", "r") as f:
-        for line in f:
-            line = line.strip()
-            if line:
+        for l in f:
+            lineStripped = l.strip()
+            if lineStripped:
                 tuples = [
                     tuple(map(float, t.strip("()").split(",")))
-                    for t in line.split()
+                    for t in lineStripped.split()
                 ]
                 loaded_arrays.append(tuples)
     return loaded_arrays
 
 
+def clearDataSetFile():
+    with open("dataSets.txt", "w") as f:
+        pass
 
 
-def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circle','circle','circle'], clusterDensity=None):
+def createDataSet(pointAmount, clusterAmount, maxA1=1, maxA2=1, clusterShapes=['circle','circle','circle'], clusterDensity=None):
     data = []
     centers = []
     radius = 0.1  # replace with density[cluster] in loops
@@ -50,7 +88,10 @@ def createDataSet(pointAmount, clusterAmount, maxA1, maxA2, clusterShapes=['circ
         elif clusterShapes[cluster] == 'ring':
             ring(data,pointAmount,centers,cluster,radius,maxA1,maxA2)
 
+    return [data, centers, radius]
 
+
+def saveDataSet(data):
     with open("dataSets.txt", "a") as f:
         tuple_strs = ["({},{})".format(p[0], p[1]) for p in data]
         f.write(" ".join(tuple_strs) + "\n")

@@ -7,15 +7,6 @@ import numpy as np
 
 
 
-#pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
-#for all 24 variants(3 algos, d1-d4, dvv on/off)
-
-#tabelle = avg pc, avg total sc, avg total dbi
-#visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]
-
-
-
-
 def testrun(dn, algo, dvv):
     avgPercentages = []
     avgTotalSc = []
@@ -25,17 +16,70 @@ def testrun(dn, algo, dvv):
     dbiArrays = []
     for i in range(len(dn)):
         currentDataset = dn[i]
+        if dvv:
+            currentDataset = dp.standardize(currentDataset)
         result = None
         if algo == 0:
             result = mp.kmeans(currentDataset,3,False)
         elif algo == 1:
-            result = mp.kmeans(currentDataset,3,True, #scalar x if dvv else scalar y)
+            result = mp.kmeans(currentDataset,3,True) #sclar noch anpassen!
         else:
-            result = mp.dbscan(currentDataset,#eps x if dvv else eps y)
+            result = mp.dbscan(currentDataset)#eps x if dvv else eps y
 
         # in arrays an stelle i jeweils berechnen/eintragen
-            # [c1,c1,c1,c1,c1,c2,c2,c2,c2,c2,c3,c3,c3,n,n,n,n,n,n,]
+        # array point order [c1,c1,c1,c1,c1,c2,c2,c2,c2,c2,c3,c3,c3,n,n,n,n,n,n,]
     return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
+
+#test noise function, works
+# initialData = dg.createDataSet(10,3)
+# vs.drawCluster(initialData[0],3,10)
+# for i in range(4):
+#     noisedData = dg.noiseGenerator(initialData,i)
+#     vs.drawCluster(noisedData,3,10)
+
+
+#pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
+
+dnSize = 10 #anzahl der datensets d für die arrays d1,d2,..
+points = 100
+clusterCount = 3
+dg.clearDataSetFile()
+
+for i in range(4):
+    for j in range(dnSize):
+        newData= dg.createDataSet(points,clusterCount)
+        noisedData = dg.noiseGenerator(newData, i) #i wird verwendet, um den modus der noise generation zu wählen
+        dg.saveDataSet(noisedData)
+
+#setup data
+dn = [[],[],[],[]] #low/far, high/far, low/near, high/near
+data = dg.getDataSets()
+counter = 0
+
+for i in range(4):
+    for j in range(int(len(data)/4)):
+        #separat, damit wir nicht immer daten erzeugen müssen, sobald wir mit obigen code fertig sind
+        dn[i].append(data[counter])
+        counter += 1
+
+#bis hier alles funktional und getestet
+
+#for all 24 variants(3 algos, d1-d4, dvv on/off)
+allStatistics = [] #gets the 24 variants of [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
+for algo in range(3): #0 -> kmeans, 1-> kmeans noise, 2->dbscan
+    for dvv in range(2): #0 -> False, != 0 -> True in python
+        for dataset in range(4): #d1,d2,d3,d4
+            currentStats = testrun(dn[dataset],algo,dvv)
+            allStatistics.append(currentStats)
+            #could create table/visual here already, whatever is easier for you
+
+#tabelle = avg pc, avg total sc, avg total dbi
+#visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]
+
+
+
+
+
 
 
 
