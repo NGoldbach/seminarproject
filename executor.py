@@ -5,8 +5,6 @@ import visualizer as vs
 import data_generator as dg
 import numpy as np
 
-
-
 def testrun(dn, algo, dvv):
     avgPercentages = []
     avgTotalSc = []
@@ -24,7 +22,36 @@ def testrun(dn, algo, dvv):
         elif algo == 1:
             result = mp.kmeans(currentDataset,3,True) #sclar noch anpassen!
         else:
-            result = mp.dbscan(currentDataset)#eps x if dvv else eps y
+            result = mp.dbscan(currentDataset, 0.1, 4)#eps x if dvv else eps y
+
+
+    # # Werte berechnen
+    # total = len(result)
+    # percentages = []
+    # for cluster in range(3): # 3 Cluster
+    #     count = np.sum(result == cluster)
+    #     percentage.append(count / total if total > 0 else 0)
+    # avgPercentages.append(np.mean(percentage))
+    # percentageArrays.append(percentages)
+    #
+    # # Silhouette-Werte (falls mehr als 1 Cluster)
+    # if len(set(result)) > 1:  # Mindestens 2 Cluster für Silhouette nötig
+    #     sc = ev.silhouette(currentDataset, result)
+    #     scArrays.append(sc)
+    #     avgTotalSc.append(np.mean(sc))
+    # else:
+    #     scArrays.append([])
+    #     avgTotalSc.append(0)
+    #
+    #     # Davies-Bouldin-Index
+    #     if len(set(result)) > 1:  # Mindestens 2 Cluster für DBI nötig
+    #         dbi_value = ev.dbi(currentDataset, result)
+    #         dbiArrays.append(dbi_value)
+    #         avgDbi.append(dbi_value)
+    #     else:
+    #         dbiArrays.append(-1)
+    #         avgDbi.append(-1)
+
 
         # in arrays an stelle i jeweils berechnen/eintragen
         # array point order [c1,c1,c1,c1,c1,c2,c2,c2,c2,c2,c3,c3,c3,n,n,n,n,n,n,]
@@ -73,17 +100,36 @@ for algo in range(3): #0 -> kmeans, 1-> kmeans noise, 2->dbscan
             allStatistics.append(currentStats)
             #could create table/visual here already, whatever is easier for you
 
+
 #tabelle = avg pc, avg total sc, avg total dbi
+# header = ["Algorithm", "Dataset", "DVV", "Avg Noise %", "Avg Silhouette", "Avg DBI"]
+# column_widths = [12, 10, 6, 15, 17, 10]
+#
+# header_line = "".join(f"{header[i]:<{column_widths[i]}}" for i in range(len(header)))
+# separator_line = "-" * sum(column_widths)
+#
+# print(header_line)
+# print(separator_line)
+#
+# # Tabellendaten ausgeben
+# for i in range(len(allStatistics)):
+#     currentStats = allStatistics[i]
+#
+#     avgPercentages = np.mean(currentStats[0]) * 100  # Prozentsatz in %
+#     avgTotalSc = np.mean(currentStats[1])
+#     avgDbi = np.mean(d for d in currentStats[2])  # DBI ohne Noise
+#
+#     # Algorithmus-/Dataset-/DVV-Bezeichnungen berechnen
+#     algo = i // 8
+#     dataset = (i // 2) % 4
+#     dvv = i % 2
+#
+#     # Datenzeile formatieren
+#     formatted_row = f"{algo:<12}{dataset:<10}{dvv:<6}{avgPercentages:<15.2f}{avgTotalSc:<17.4f}{avgDbi:<10.4f}"
+#     print(formatted_row)
+
+
 #visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]
-
-
-
-
-
-
-
-
-
 
 
 
