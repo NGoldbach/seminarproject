@@ -51,6 +51,8 @@ def silhouette(data, labels):
     silhouette_vals = np.full(n_samples, np.nan)  # Standardwerte sind NaN (z. B. für Rauschen)
 
     for i, label in enumerate(labels):
+        if label == 3:
+            continue
         # Punkte im gleichen Cluster finden
         in_cluster = (labels == label)
         same_cluster = npData[in_cluster]
@@ -60,7 +62,7 @@ def silhouette(data, labels):
         # b(i): Kleinste durchschnittliche Distanz zu einem anderen Cluster
         b_i = np.inf
         for other_label in unique_labels:
-            if other_label != label and other_label != -1:
+            if other_label != label and other_label != 3:
                 other_points = npData[labels == other_label]
                 center = np.mean(other_points, axis=0)
                 dist = np.linalg.norm(center-npData[i])

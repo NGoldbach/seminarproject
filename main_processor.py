@@ -78,7 +78,7 @@ def kmeans(data, k, nvBool=False,nvScalar=0.5, iter=100):
 
 def dbscan(data, eps=0.05, min_pts=4):
     n_points = len(data)                 # Anzahl der Punkte im Datensatz
-    labels = np.full(n_points, -1)        # Alle Labels auf -1 (Rauschen) setzen
+    labels = [-1]*n_points               # Alle Labels auf -1 (Rauschen) setzen
     visit = [False] * n_points            # Besuchte Punkte markieren
     cluster_id = 0                        # Cluster-Nummerierung mit 0 starten
 

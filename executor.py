@@ -5,11 +5,11 @@ import visualizer as vs
 import data_generator as dg
 import numpy as np
 
-def testrun(dn, algo, dvv):
+def testrun(dn, algo, dvv, pointsperCluster):
     avgPercentages = []
     avgTotalSc = []
     avgDbi = []
-    percentageArrays = [] #[[]...]
+    percentageArrays = []
     scArrays = []
     dbiArrays = []
     for i in range(len(dn)):
@@ -18,45 +18,47 @@ def testrun(dn, algo, dvv):
             currentDataset = dp.standardize(currentDataset)
         result = None
         if algo == 0:
+            print("kmeans")
             result = mp.kmeans(currentDataset,3,False)
+            result = result[0]
         elif algo == 1:
+            print("kmeans n")
             result = mp.kmeans(currentDataset,3,True) #sclar noch anpassen!
+            result = result[0]
         else:
+            print("dbscan")
             result = mp.dbscan(currentDataset, 0.1, 4)#eps x if dvv else eps y
 
+        correctCounter = 0
+        for j in range(3):
+            for k in range(pointsperCluster):
+                if j == 0 and result[j*pointsperCluster + k] == j:
+                    correctCounter += 1
+                if j == 1 and result[j*pointsperCluster + k] == j:
+                    correctCounter += 1
+                if j == 2 and result[j*pointsperCluster + k] == j:
+                    correctCounter += 1
 
-    # # Werte berechnen
-    # total = len(result)
-    # percentages = []
-    # for cluster in range(3): # 3 Cluster
-    #     count = np.sum(result == cluster)
-    #     percentage.append(count / total if total > 0 else 0)
-    # avgPercentages.append(np.mean(percentage))
-    # percentageArrays.append(percentages)
-    #
-    # # Silhouette-Werte (falls mehr als 1 Cluster)
-    # if len(set(result)) > 1:  # Mindestens 2 Cluster für Silhouette nötig
-    #     sc = ev.silhouette(currentDataset, result)
-    #     scArrays.append(sc)
-    #     avgTotalSc.append(np.mean(sc))
-    # else:
-    #     scArrays.append([])
-    #     avgTotalSc.append(0)
-    #
-    #     # Davies-Bouldin-Index
-    #     if len(set(result)) > 1:  # Mindestens 2 Cluster für DBI nötig
-    #         dbi_value = ev.dbi(currentDataset, result)
-    #         dbiArrays.append(dbi_value)
-    #         avgDbi.append(dbi_value)
-    #     else:
-    #         dbiArrays.append(-1)
-    #         avgDbi.append(-1)
+        for j in range(pointsperCluster * 3, pointsperCluster * 3 +(len(result)- 3 * pointsperCluster)): #check for correct indizes, 300 to max
+            if result[j] == 3:
+                correctCounter += 1
+        percentageCorrect = correctCounter/len(result)
+        percentageArrays.append(percentageCorrect)
 
+        if len(set(result)) > 1:
+            sc = ev.silhouette(currentDataset, result)
+            scArrays.append(np.mean(sc))
+            dbi = ev.dbi(currentDataset, result) # <- fix for noise
+            dbiArrays.append(dbi)
+        else:
+            scArrays.append(-1)
+            dbiArrays.append(10) # figure out sensible value
 
-        # in arrays an stelle i jeweils berechnen/eintragen
-        # array point order [c1,c1,c1,c1,c1,c2,c2,c2,c2,c2,c3,c3,c3,n,n,n,n,n,n,]
+    avgPercentages.append(np.mean(percentageArrays))
+    avgTotalSc.append(np.mean(scArrays))
+    avgDbi.append(np.mean(dbiArrays))
+
     return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
-
 #test noise function, works
 # initialData = dg.createDataSet(10,3)
 # vs.drawCluster(initialData[0],3,10)
@@ -67,8 +69,8 @@ def testrun(dn, algo, dvv):
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
-dnSize = 10 #anzahl der datensets d für die arrays d1,d2,..
-pointsPerCluster = 100
+dnSize = 3 #anzahl der datensets d für die arrays d1,d2,..
+pointsPerCluster = 10
 clusterCount = 3
 dg.clearDataSetFile()
 
@@ -96,11 +98,11 @@ allStatistics = [] #gets the 24 variants of [avgPercentages,avgTotalSc,avgDbi,pe
 for algo in range(3): #0 -> kmeans, 1-> kmeans noise, 2->dbscan
     for dvv in range(2): #0 -> False, != 0 -> True in python
         for dataset in range(4): #d1,d2,d3,d4
-            currentStats = testrun(dn[dataset],algo,dvv)
+            currentStats = testrun(dn[dataset],algo,dvv,pointsPerCluster)
             allStatistics.append(currentStats)
             #could create table/visual here already, whatever is easier for you
 
-
+print(allStatistics)
 #tabelle = avg pc, avg total sc, avg total dbi
 # header = ["Algorithm", "Dataset", "DVV", "Avg Noise %", "Avg Silhouette", "Avg DBI"]
 # column_widths = [12, 10, 6, 15, 17, 10]
