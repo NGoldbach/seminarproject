@@ -41,13 +41,13 @@ def testrun(dn, algo, dvv):
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
 dnSize = 10 #anzahl der datensets d für die arrays d1,d2,..
-points = 100
+pointsPerCluster = 100
 clusterCount = 3
 dg.clearDataSetFile()
 
 for i in range(4):
     for j in range(dnSize):
-        newData= dg.createDataSet(points,clusterCount)
+        newData= dg.createDataSet(pointsPerCluster,clusterCount)
         noisedData = dg.noiseGenerator(newData, i) #i wird verwendet, um den modus der noise generation zu wählen
         dg.saveDataSet(noisedData)
 
