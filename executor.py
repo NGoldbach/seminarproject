@@ -27,7 +27,7 @@ def testrun(dn, algo, dvv, pointsperCluster):
             result = result[0]
         else:
             print("dbscan")
-            result = mp.dbscan(currentDataset, 0.1, 4)#eps x if dvv else eps y
+            result = mp.dbscan(currentDataset, 0.4 if not dvv else 0.2, 4)#eps x if dvv else eps y
 
         correctCounter = 0
         for j in range(3):
@@ -47,7 +47,7 @@ def testrun(dn, algo, dvv, pointsperCluster):
 
         if len(set(result)) > 1:
             sc = ev.silhouette(currentDataset, result)
-            scArrays.append(np.mean(sc))
+            scArrays.append(np.nanmean(sc))
             dbi = ev.dbi(currentDataset, result) # <- fix for noise
             dbiArrays.append(dbi)
         else:
@@ -69,7 +69,7 @@ def testrun(dn, algo, dvv, pointsperCluster):
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
-dnSize = 3 #anzahl der datensets d für die arrays d1,d2,..
+dnSize = 2 #anzahl der datensets d für die arrays d1,d2,..
 pointsPerCluster = 10
 clusterCount = 3
 dg.clearDataSetFile()
@@ -102,33 +102,13 @@ for algo in range(3): #0 -> kmeans, 1-> kmeans noise, 2->dbscan
             allStatistics.append(currentStats)
             #could create table/visual here already, whatever is easier for you
 
-print(allStatistics)
+
+# Test-Ausgabe 
+#print(allStatistics)
+
 #tabelle = avg pc, avg total sc, avg total dbi
-# header = ["Algorithm", "Dataset", "DVV", "Avg Noise %", "Avg Silhouette", "Avg DBI"]
-# column_widths = [12, 10, 6, 15, 17, 10]
-#
-# header_line = "".join(f"{header[i]:<{column_widths[i]}}" for i in range(len(header)))
-# separator_line = "-" * sum(column_widths)
-#
-# print(header_line)
-# print(separator_line)
-#
-# # Tabellendaten ausgeben
-# for i in range(len(allStatistics)):
-#     currentStats = allStatistics[i]
-#
-#     avgPercentages = np.mean(currentStats[0]) * 100  # Prozentsatz in %
-#     avgTotalSc = np.mean(currentStats[1])
-#     avgDbi = np.mean(d for d in currentStats[2])  # DBI ohne Noise
-#
-#     # Algorithmus-/Dataset-/DVV-Bezeichnungen berechnen
-#     algo = i // 8
-#     dataset = (i // 2) % 4
-#     dvv = i % 2
-#
-#     # Datenzeile formatieren
-#     formatted_row = f"{algo:<12}{dataset:<10}{dvv:<6}{avgPercentages:<15.2f}{avgTotalSc:<17.4f}{avgDbi:<10.4f}"
-#     print(formatted_row)
+# Tabelle mit den Werten: avgPercentages, avg total silhouette score, avg total Davies-Bouldin-Index
+vs.drawTable(allStatistics)
 
 
 #visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]

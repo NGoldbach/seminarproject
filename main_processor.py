@@ -125,16 +125,16 @@ def dbscan(data, eps=0.05, min_pts=4):
 
 
 # Function to plot k-distance graph
-    def plot_k_distance_graph(X, k):
-        neigh = NearestNeighbors(n_neighbors=k)
-        neigh.fit(X)
-        distances, _ = neigh.kneighbors(X)
-        distances = np.sort(distances[:, k-1])
-        plt.figure(figsize=(10, 6))
-        plt.plot(distances)
-        plt.xlabel('Points')
-        plt.ylabel(f'{k}-th nearest neighbor distance')
-        plt.title('K-distance Graph')
-        plt.show()
-    # Plot k-distance graph
-    plot_k_distance_graph(X, k=5)
+#     def plot_k_distance_graph(X, k):
+#         neigh = NearestNeighbors(n_neighbors=k)
+#         neigh.fit(X)
+#         distances, _ = neigh.kneighbors(X)
+#         distances = np.sort(distances[:, k-1])
+#         plt.figure(figsize=(10, 6))
+#         plt.plot(distances)
+#         plt.xlabel('Points')
+#         plt.ylabel(f'{k}-th nearest neighbor distance')
+#         plt.title('K-distance Graph')
+#         plt.show()
+#     # Plot k-distance graph
+#     plot_k_distance_graph(X, k=5)

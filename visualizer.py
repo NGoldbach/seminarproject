@@ -95,3 +95,59 @@ def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k')
     plt.plot(xVals, scoreData, marker='o')
 
     plt.show()
+
+
+import matplotlib.pyplot as plt
+
+def drawTable(all_statistics, title="Clustering Results"):
+    headers = ["Algorithm", "Dataset", "DVV", "Avg Percentages", "Avg SC", "Avg DBI"]
+    table = []
+
+    # Iteration über alle Statistikwerte, Tabelle befüllen
+    for index, stats in enumerate(all_statistics):
+        algo = index // 8  # Es gibt 3 Algorithmen (0, 1, 2)
+        dataset = (index // 2) % 4  # 4 Datensatztypen (d1, d2, d3, d4)
+        dvv = index % 2  # 2 DVV-Optionen (False, True)
+
+        # Entnahme von Werten aus den Statistiken
+        avg_percentages = stats[0]
+        avg_silhouette = stats[1]
+        avg_dbi = stats[2]
+
+        # Fügen Sie die Zeile zur Tabelle hinzu
+        table.append([
+            f"{algo}",
+            f"d{dataset + 1}",
+            "On" if dvv else "Off",
+            round(avg_percentages[0], 2),
+            round(avg_silhouette[0], 2),
+            round(avg_dbi[0], 2)
+        ])
+
+    # Dynamische Anpassung der Abbildungsgröße
+    num_rows = len(table)  # Anzahl der Zeilen in der Tabelle
+    num_cols = len(headers)  # Anzahl der Spalten
+    fig_height = max(10, num_rows * 0.5)  # Dynamischer Plot-Höhenwert, mindestens 6
+    fig_width = max(10, num_cols * 0.5)  # Dynamischer Plot-Breitenwert, mindestens 8
+
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+    ax.axis("tight")
+    ax.axis("off")
+
+    tbl = ax.table(
+        cellText=table,  # Tabelleninhalte
+        colLabels=headers,  # Spaltenüberschriften
+        cellLoc="center",  # Zentrierten Text
+        loc="center"  # In der Mitte positionieren
+    )
+
+    # Optimierungen: Schriftgröße und Spaltenbreite
+    tbl.auto_set_font_size(False)
+    tbl.set_fontsize(16)
+    tbl.scale(1, 2)
+    tbl.auto_set_column_width(col=list(range(len(headers))))
+
+    # Titel hinzufügen
+    plt.title(title, fontsize=14, pad=20)
+
+    plt.show()
