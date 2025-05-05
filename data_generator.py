@@ -9,16 +9,16 @@ def noiseGenerator(data, mode):
     noiseMinDistScalar = 0
     if mode == 0:
         noisePercentage = 0.25
-        noiseMinDistScalar = 0.75
+        noiseMinDistScalar = 0.5
     elif mode == 1:
         noisePercentage = 0.75
-        noiseMinDistScalar = 0.75
+        noiseMinDistScalar = 0.5
     elif mode == 2:
         noisePercentage = 0.25
-        noiseMinDistScalar = 0.25
+        noiseMinDistScalar = -0.25
     elif mode == 3:
         noisePercentage = 0.75
-        noiseMinDistScalar = 0.25
+        noiseMinDistScalar = -0.25
 
     clusterCenters = data[1]
     clusterRadius = data[2]
@@ -26,10 +26,9 @@ def noiseGenerator(data, mode):
 
     numNoisePoints = int(len(data[0]) * noisePercentage)
     noisePoints = []
-
     while len(noisePoints) < numNoisePoints:
-        x = random.uniform(0, 1)
-        y = random.uniform(0, 1)
+        x = random.gauss(0.5,0.3)
+        y = random.gauss(0.5,0.3)
         valid = True
         for cx, cy in clusterCenters:
             dist = math.hypot(x - cx, y - cy)

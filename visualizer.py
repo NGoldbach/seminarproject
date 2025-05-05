@@ -24,7 +24,7 @@ def drawCAResult(data, membershipList, noiseGroup=False):
     plt.legend()
 
 
-def drawCluster(data, k, points):
+def drawCluster(data, k, points, dvv=False):
     clusters = [[] for i in range(k+1)]
     counter = 0
     for cluster in range(k):
@@ -43,8 +43,13 @@ def drawCluster(data, k, points):
         yVals = [p[1] for p in clusters[i]]
         plt.scatter(xVals, yVals, color=colors[i], label=f'Cluster {i + 1}', s=5)
 
-    plt.xlim(0, 1)
-    plt.ylim(0, 1)
+    if dvv:
+        plt.xlim(-4, 4)
+        plt.ylim(-4, 4)
+
+    else:
+        plt.xlim(0, 1)
+        plt.ylim(0, 1)
     plt.legend()
     plt.show()
 

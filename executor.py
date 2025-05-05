@@ -60,12 +60,14 @@ def testrun(dn, algo, dvv, pointsperCluster):
 
     return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
 #test noise function, works
-# initialData = dg.createDataSet(10,3)
-# vs.drawCluster(initialData[0],3,10)
-# for i in range(4):
-#     noisedData = dg.noiseGenerator(initialData,i)
-#     vs.drawCluster(noisedData,3,10)
-
+initialData = dg.createDataSet(100,3)
+vs.drawCluster(initialData[0],3,100)
+vs.drawCluster(dp.standardize(initialData[0]),3,100, True)
+for i in range(4):
+    noisedData = dg.noiseGenerator(initialData,i)
+    vs.drawCluster(noisedData,3,100)
+    vs.drawCluster(dp.standardize(noisedData),3,100, True)
+exit()
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
