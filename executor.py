@@ -4,6 +4,12 @@ import main_processor as mp
 import visualizer as vs
 import data_generator as dg
 import numpy as np
+from collections import defaultdict
+from itertools import permutations
+
+from main_processor import kmeans
+from visualizer import drawMultipleCAResults
+
 
 def testrun(dn, algo, dvv, pointsperCluster):
     avgPercentages = []
@@ -16,6 +22,7 @@ def testrun(dn, algo, dvv, pointsperCluster):
         currentDataset = dn[i]
         if dvv:
             currentDataset = dp.standardize(currentDataset)
+            currentDataset = dp.iqrTrimming(currentDataset,1.5)
         result = None
         if algo == 0:
             print("kmeans")
@@ -27,23 +34,9 @@ def testrun(dn, algo, dvv, pointsperCluster):
             result = result[0]
         else:
             print("dbscan")
-            result = mp.dbscan(currentDataset, 0.4 if not dvv else 0.2, 4)#eps x if dvv else eps y
+            result = mp.dbscan(currentDataset, 0.02 if not dvv else 0.14, 4)#eps x if dvv else eps y
 
-        correctCounter = 0
-        for j in range(3):
-            for k in range(pointsperCluster):
-                if j == 0 and result[j*pointsperCluster + k] == j:
-                    correctCounter += 1
-                if j == 1 and result[j*pointsperCluster + k] == j:
-                    correctCounter += 1
-                if j == 2 and result[j*pointsperCluster + k] == j:
-                    correctCounter += 1
-
-        for j in range(pointsperCluster * 3, pointsperCluster * 3 +(len(result)- 3 * pointsperCluster)): #check for correct indizes, 300 to max
-            if result[j] == 3:
-                correctCounter += 1
-        percentageCorrect = correctCounter/len(result)
-        percentageArrays.append(percentageCorrect)
+        percentageArrays.append(ev.calculate_best_label_combination(currentDataset, result,pointsperCluster))
 
         if len(set(result)) > 1:
             sc = ev.silhouette(currentDataset, result)
@@ -59,34 +52,28 @@ def testrun(dn, algo, dvv, pointsperCluster):
     avgDbi.append(np.mean(dbiArrays))
 
     return [avgPercentages,avgTotalSc,avgDbi,percentageArrays,scArrays,dbiArrays]
-#test noise function, works
+
 # initialData = dg.createDataSet(100,3)
 # vs.drawCluster(initialData[0],3,100)
 # vs.drawCluster(dp.standardize(initialData[0]),3,100, True)
 # for i in range(4):
-#     noisedData = dg.noiseGenerator(initialData,i)
-#     vs.drawCluster(noisedData,3,100)
-#     vs.drawCluster(dp.standardize(noisedData),3,100, True)
+#      noisedData = dg.noiseGenerator(initialData,i)
+#      vs.drawCluster(noisedData,3,100)
+#      vs.drawCluster(dp.standardize(noisedData),3,100, True)
 
-# m = [-100,0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
-# m2 = []
-# min = min(m)
-# max = max(m)
-# for v in m:
-#     new = float((v - min) / (max - min))
-#     m2.append(new)
-# print(m2)
-# print(dp.standardize(m))
-# print(dp.standardizeRobust(m))
+# data = dg.createDataSet(100,3)
+# data = dp.standardize(data[0])
+# result = mp.kmeans(data,3,True)
+# vs.drawMultipleCAResults([data],[result[0]],dvv=True)
 # exit()
-
-
-
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
-dnSize = 20 #anzahl der datensets d für die arrays d1,d2,..
-pointsPerCluster = 20
+
+
+
+dnSize = 10 #anzahl der datensets d für die arrays d1,d2,..
+pointsPerCluster = 100
 clusterCount = 3
 dg.clearDataSetFile()
 

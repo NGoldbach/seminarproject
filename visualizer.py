@@ -3,7 +3,7 @@ import matplotlib.cm as cm
 import numpy as np
 
 
-def drawCAResult(data, membershipList, noiseGroup=False):
+def drawCAResult(data, membershipList, noiseGroup=False, dvv=False):
     clusterCount = max(membershipList) + 1
     clusters = [[] for i in range(clusterCount)]
     for p in range(len(data)):
@@ -19,8 +19,12 @@ def drawCAResult(data, membershipList, noiseGroup=False):
         else:
             plt.scatter(xVals, yVals, color=colors[i], label=f'Cluster {i+1}', s=5)
 
-    plt.xlim(-4, 4)
-    plt.ylim(-4, 4)
+    if dvv:
+        plt.xlim(-4, 4)
+        plt.ylim(-4, 4)
+    else:
+        plt.xlim(0, 1,)
+        plt.ylim(0, 1)
     plt.legend()
 
 
@@ -54,10 +58,10 @@ def drawCluster(data, k, points, dvv=False):
     plt.show()
 
 
-def drawMultipleCAResults(dataArray, membershipListArray, hasNoiseArray=[]):
+def drawMultipleCAResults(dataArray, membershipListArray, hasNoiseArray=[], dvv=False):
     for i in range(len(dataArray)):
         plt.figure()
-        drawCAResult(dataArray[i], membershipListArray[i], hasNoiseArray[i] if (len(hasNoiseArray) > 0) else False)
+        drawCAResult(dataArray[i], membershipListArray[i], hasNoiseArray[i] if (len(hasNoiseArray) > 0) else False, dvv)
 
     plt.show()
 
@@ -105,19 +109,21 @@ def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k')
 
 def drawTable(all_statistics, title="Clustering Results"):
     headers = ["Algorithm", "Dataset", "DVV", "Avg Percentages", "Avg SC", "Avg DBI"]
+    algorithm_names = {0: "K-Means", 1: "K-Me. N", 2: "DBSCAN"}  # Zuordnung der Algorithmenamen
     table = []
 
     for index, stats in enumerate(all_statistics):
         algo = index // 8  # Es gibt 3 Algorithmen (0, 1, 2)
-        dataset = (index // 2) % 4  # 4 Datensatztypen (d1, d2, d3, d4)
-        dvv = index % 2  # 2 DVV-Optionen (False, True)
+        algorithm_name = algorithm_names.get(algo, f"Algo {algo}")
+        dataset = (index) % 4  # 4 Datensatztypen (d1, d2, d3, d4)
+        dvv = 0 if index%8 < 4 else 1  # 2 DVV-Optionen (False, True)
 
         avg_percentages = stats[0]
         avg_silhouette = stats[1]
         avg_dbi = stats[2]
 
         table.append([
-            f"{algo}",
+            algorithm_name,
             f"d{dataset + 1}",
             "On" if dvv else "Off",
             round(avg_percentages[0], 2),
@@ -152,7 +158,6 @@ def drawTable(all_statistics, title="Clustering Results"):
 
     plt.show()
 
-
 def visualize_data(value_array, title="Data Visualization", xlabel="Index", ylabel="Value", color="blue", label="Data"):
     def flatten(data):
         if isinstance(data, (list, tuple, np.ndarray)):
@@ -164,7 +169,7 @@ def visualize_data(value_array, title="Data Visualization", xlabel="Index", ylab
 
     x_values = np.arange(1, len(flat_values) + 1)
 
-    plt.plot(x_values, flat_values, marker='o', linestyle='-', color=color, label=label)
+    plt.scatter(x_values, flat_values, marker='o', color=color, label=label)
 
     # Diagrammeinstellungen
     plt.title(title, fontsize=14)

@@ -78,3 +78,57 @@ def silhouette(data, labels):
         silhouette_vals[i] = (b_i - a_i) / max(a_i, b_i)
 
     return silhouette_vals  # Ein Array mit Silhouette-Werten (zwischen -1 und 1)
+
+
+from collections import defaultdict
+from itertools import permutations
+
+
+from collections import defaultdict
+from itertools import permutations
+
+def calculate_best_label_combination(points, labels, pointsPerCluster):
+    total_clusters = 3  # Expected true clusters
+
+    # Generate correct labels (0, 1, 2 for clusters; 3 for noise)
+    correct_labels = [
+        i // pointsPerCluster if i < total_clusters * pointsPerCluster else 3
+        for i in range(len(points))
+    ]
+
+    # Group indices by predicted label
+    grouped_indices = defaultdict(list)
+    for index, label in enumerate(labels):
+        grouped_indices[label].append(index)
+
+    # Sort label groups by label for consistency
+    sorted_labels = sorted(grouped_indices.keys())
+    index_groups = [grouped_indices[label] for label in sorted_labels]
+
+    # Build per-cluster match ratios: one row per predicted cluster, 3 values for match against labels 0, 1, 2
+    def match_ratios(group):
+        size = len(group)
+        return [
+            sum(correct_labels[i] == target for i in group) / size
+            for target in range(total_clusters)
+        ]
+
+    all_ratios = [match_ratios(group) for group in index_groups]
+
+    # Fill up to 3 groups with zeroes if we have fewer than 3 predicted clusters
+    while len(all_ratios) < total_clusters:
+        all_ratios.append([0.0, 0.0, 0.0])
+
+    # Try all permutations of labels 0–2 mapped to index groups 0–2
+    best_sum = -1
+    best_perm = None
+
+    for perm in permutations(range(total_clusters)):
+        current_sum = sum(all_ratios[i][perm[i]] for i in range(total_clusters)) / total_clusters
+        if current_sum > best_sum:
+            best_sum = current_sum
+            best_perm = perm
+
+    return best_sum
+
+

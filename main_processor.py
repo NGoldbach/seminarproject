@@ -9,11 +9,11 @@ import random
 #   noise variant on/off (default off), nvBool
 #   noise variant distance scalar (default 0.275), nvScalar
 #output: [membershipList (0 to k-1),objective function value]
-def kmeans(data, k, nvBool=False,nvScalar=0.5, iter=100):
+def kmeans(data, k, nvBool=False,nvScalar=0.75, iter=100):
     membershipList = [0] * len(data)
-    prototypes = []
-    for i in range(k):
-        prototypes.append(random.choice(data))
+    prototypes = [data[0],data[100],data[200]]
+    # for i in range(k):
+    #     prototypes.append(random.choice(data))
     nvDistSquared = 0 #noise Prototype
     prototypes = np.array(prototypes)
     #Addition of noise prototype
