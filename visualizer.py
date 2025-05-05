@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
+import numpy as np
 
 
 def drawCAResult(data, membershipList, noiseGroup=False):
@@ -97,24 +98,19 @@ def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k')
     plt.show()
 
 
-import matplotlib.pyplot as plt
-
 def drawTable(all_statistics, title="Clustering Results"):
     headers = ["Algorithm", "Dataset", "DVV", "Avg Percentages", "Avg SC", "Avg DBI"]
     table = []
 
-    # Iteration über alle Statistikwerte, Tabelle befüllen
     for index, stats in enumerate(all_statistics):
         algo = index // 8  # Es gibt 3 Algorithmen (0, 1, 2)
         dataset = (index // 2) % 4  # 4 Datensatztypen (d1, d2, d3, d4)
         dvv = index % 2  # 2 DVV-Optionen (False, True)
 
-        # Entnahme von Werten aus den Statistiken
         avg_percentages = stats[0]
         avg_silhouette = stats[1]
         avg_dbi = stats[2]
 
-        # Fügen Sie die Zeile zur Tabelle hinzu
         table.append([
             f"{algo}",
             f"d{dataset + 1}",
@@ -141,7 +137,6 @@ def drawTable(all_statistics, title="Clustering Results"):
         loc="center"  # In der Mitte positionieren
     )
 
-    # Optimierungen: Schriftgröße und Spaltenbreite
     tbl.auto_set_font_size(False)
     tbl.set_fontsize(16)
     tbl.scale(1, 2)
@@ -151,3 +146,37 @@ def drawTable(all_statistics, title="Clustering Results"):
     plt.title(title, fontsize=14, pad=20)
 
     plt.show()
+
+
+def visualize_data(value_array, title="Data Visualization", xlabel="Index", ylabel="Value", color="blue", label="Data"):
+    def flatten(data):
+        if isinstance(data, (list, tuple, np.ndarray)):
+            return [item for sublist in data for item in flatten(sublist)]
+        else:
+            return [data]
+
+    flat_values = flatten(value_array)
+
+    x_values = np.arange(1, len(flat_values) + 1)
+
+    plt.plot(x_values, flat_values, marker='o', linestyle='-', color=color, label=label)
+
+    # Diagrammeinstellungen
+    plt.title(title, fontsize=14)
+    plt.xlabel(xlabel, fontsize=12)
+    plt.ylabel(ylabel, fontsize=12)
+
+    if len(x_values) > 33:
+        plt.xticks(
+            np.linspace(1, len(flat_values), num=min(len(flat_values), 50), dtype=int)
+        )
+    else:
+        plt.xticks(x_values)
+
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
+
+

@@ -69,8 +69,8 @@ def testrun(dn, algo, dvv, pointsperCluster):
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
-dnSize = 2 #anzahl der datensets d für die arrays d1,d2,..
-pointsPerCluster = 10
+dnSize = 20 #anzahl der datensets d für die arrays d1,d2,..
+pointsPerCluster = 20
 clusterCount = 3
 dg.clearDataSetFile()
 
@@ -113,7 +113,35 @@ vs.drawTable(allStatistics)
 
 #visualization = [pc1,pc2,pc3], [avg. sc1,avg. sc2,avg. sc3,..], [dbi1,dbi2,dbi3]
 
+# visualizaion für PC
+vs.visualize_data(
+    value_array=[x[0] for x in allStatistics],
+    title="Average Percentages",
+    xlabel="Configuration",
+    ylabel="Avg Percentage",
+    color="orange",
+    label="Avg Percentages"
+)
 
+# visualizaion für SC
+vs.visualize_data(
+    value_array=[x[1] for x in allStatistics],
+    title="Average Silhouette Scores",
+    xlabel="Configuration",
+    ylabel="Silhouette Score",
+    color="green",
+    label="Silhouette Scores"
+)
+
+# visualization für DBI
+vs.visualize_data(
+    value_array=[x[2] for x in allStatistics],  # Extrahiere die Werte an Index 2
+    title="Average Davies-Bouldin Index",
+    xlabel="Configuration",
+    ylabel="DBI",
+    color="blue",
+    label="DBI Values"
+)
 
 
 
@@ -211,7 +239,7 @@ vs.drawTable(allStatistics)
 # testData = dg.getDataSets()[-1]
 #
 # kmeans_result = mp.kmeans(testData,3)
-# kmeans_labels = np.array(kmeans_result[0])  # Konvertiere Labels in NumPy-Array
+# kmeans_labels = np.array(kmeans_result[0])
 # dbi_kmeans = ev.dbi(testData, kmeans_labels)
 # print("Kmeans DBI: ", dbi_kmeans, "\n")
 # silhouette_kmeans = ev.silhouette(testData, kmeans_labels)
@@ -221,11 +249,11 @@ vs.drawTable(allStatistics)
 # vs.drawMultipleCAResults([testData],[kmeans_labels],[False])
 #
 # # DBSCAN Test
-# dbscan_labels = np.array(mp.dbscan(testData))  # Ersetze 'data' durch 'testData'
+# dbscan_labels = np.array(mp.dbscan(testData))
 # print("DBSCAN -Cluster Labels: ", dbscan_labels, "\n")
-# silhouette_dbscan = ev.silhouette(testData, dbscan_labels)  # Ersetze 'data' durch 'testData'
+# silhouette_dbscan = ev.silhouette(testData, dbscan_labels)
 # print("DBSCAN Silhouette: ", silhouette_dbscan, "\n")
-# dbi_dbscan = ev.dbi(testData, dbscan_labels)  # Ersetze 'data' durch 'testData'
+# dbi_dbscan = ev.dbi(testData, dbscan_labels)
 # print("DBSCAN -DBI: ", dbi_dbscan, "\n")
 # vs.drawIndexGraph([dbi_dbscan])
 # vs.drawSilhouttePlot(silhouette_dbscan, dbscan_labels)
