@@ -4,7 +4,7 @@ def dbi(data, labels):
     """
     :return: Ein Float-Wert, der die Clusterqualität misst (je niedriger, desto besser)
     """
-    unique_labels = np.unique(labels)         # Eindeutige Cluster-IDs bestimmen
+    unique_labels = [label for label in np.unique(labels) if label != 3] #Noise ausschließen
     n_clusters = len(unique_labels)           # Anzahl der Cluster
     labels = np.array(labels)                 # Sicherstellen, dass labels ein NumPy-Array ist
     npData = np.array(data)
