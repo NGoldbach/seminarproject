@@ -27,7 +27,7 @@ def testrun(dn, algo, dvv, pointsperCluster):
             result = result[0]
         else:
             print("dbscan")
-            result = mp.dbscan(currentDataset, 0.4 if not dvv else 0.2, 4)#eps x if dvv else eps y
+            result = mp.dbscan(currentDataset, 0.14 if dvv else 0.02, 4)#eps x if dvv else eps y
 
         correctCounter = 0
         for j in range(3):
@@ -85,8 +85,8 @@ def testrun(dn, algo, dvv, pointsperCluster):
 
 #pre set-up: create all datasets for tests and variants: low/high noise, far/near noise -> 4 dataset types, d1,d2,d3,d4
 
-dnSize = 20 #anzahl der datensets d für die arrays d1,d2,..
-pointsPerCluster = 20
+dnSize = 10 #anzahl der datensets d für die arrays d1,d2,..
+pointsPerCluster = 50
 clusterCount = 3
 dg.clearDataSetFile()
 
