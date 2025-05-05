@@ -21,16 +21,23 @@ def standardize(data):
 
 #Same input, output robust standardization based on median and IQR
 def standardizeRobust(data):
-    newData = []
-    medianXY = np.median(data,axis=0)
-    lowerBoundIQRXY = np.percentile(data,25,axis=0)
-    higherBoundIQRXY = np.percentile(data,75,axis=0)
-    iqrXY = (higherBoundIQRXY[0]-lowerBoundIQRXY[0],higherBoundIQRXY[1]-lowerBoundIQRXY[0])
-    for v in data:
-        newX = float((v[0]-medianXY[0])/iqrXY[0])
-        newY = float((v[1]-medianXY[1])/iqrXY[1])
-        newData.append((newX,newY))
-    return newData
+    data = np.array(data)
+
+    if data.ndim == 1:  # 1D data: simple list of numbers
+        median = float(np.median(data))
+        iqr = float(np.percentile(data, 75) - np.percentile(data, 25))
+        return [float((x - median) / iqr) for x in data]
+
+    elif data.ndim == 2 and data.shape[1] == 2:  # 2D data: list of (x, y) pairs
+        medianXY = np.median(data, axis=0)
+        q25 = np.percentile(data, 25, axis=0)
+        q75 = np.percentile(data, 75, axis=0)
+        iqrXY = q75 - q25
+
+        return [(
+            float((x - medianXY[0]) / iqrXY[0]),
+            float((y - medianXY[1]) / iqrXY[1])
+        ) for x, y in data]
 
 
 def iqrTrimming(data, iqrScalar=1.5):
