@@ -105,10 +105,12 @@ def drawIndexGraph(scoreData, indexLabel='Silhouette-Score', iterationLabel='k')
 
 def drawTable(all_statistics, title="Clustering Results"):
     headers = ["Algorithm", "Dataset", "DVV", "Avg Percentages", "Avg SC", "Avg DBI"]
+    algorithm_names = {0: "K-Means", 1: "K-Me. N", 2: "DBSCAN"}  # Zuordnung der Algorithmenamen
     table = []
 
     for index, stats in enumerate(all_statistics):
         algo = index // 8  # Es gibt 3 Algorithmen (0, 1, 2)
+        algorithm_name = algorithm_names.get(algo, f"Algo {algo}")
         dataset = (index // 2) % 4  # 4 Datensatztypen (d1, d2, d3, d4)
         dvv = index % 2  # 2 DVV-Optionen (False, True)
 
@@ -117,7 +119,7 @@ def drawTable(all_statistics, title="Clustering Results"):
         avg_dbi = stats[2]
 
         table.append([
-            f"{algo}",
+            algorithm_name,
             f"d{dataset + 1}",
             "On" if dvv else "Off",
             round(avg_percentages[0], 2),
